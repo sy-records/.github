@@ -1,0 +1,41 @@
+name: Plugin readme update
+
+on:
+  workflow_dispatch:
+    inputs:
+      php_version:
+        description: 'Input PHP Version'
+        required: false
+        default: ''
+      wp_version:
+        description: 'Input WordPress Version'
+        required: true
+
+jobs:
+  update:
+    name: Update ${{ matrix.owner }}/${{ matrix.repository }} readme.txt
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        owner: [ 'sy-records' ]
+        repository: [ 'qiniu-kodo-wordpress', 'aliyun-oss-wordpress', 'wordpress-qcloud-cos', 'realtimehot-weibo', 'wp-baidu-textcensor', 'textcensor-for-articles', 'random-look', 'MemorialDay', 'upyun-uss-wordpress', 'volcengine-imagex-wordpress', 'huaweicloud-obs-wordpress' ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Checkout ${{ matrix.owner }}/${{ matrix.repository }}
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ matrix.owner }}/${{ matrix.repository }}
+          path: ${{ matrix.repository }}
+
+      - name: Update ${{ matrix.repository }} readme.txt
+        run:
+          PHP_VERSION=${{ github.event.inputs.php_version }} WP_VERSION=${{ github.event.inputs.wp_version }} ${{ github.workspace }}/scripts/update-plugin-readme.sh
+        working-directory: ${{ matrix.repository }}
+
+      - name: Push to ${{ matrix.owner }}/${{ matrix.repository }}
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          repository: ${{ matrix.repository }}
+          commit_message: Update readme.txt
+          file_pattern: readme.txt
