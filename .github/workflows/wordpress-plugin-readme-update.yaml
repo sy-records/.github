@@ -27,6 +27,7 @@ jobs:
         with:
           repository: ${{ matrix.owner }}/${{ matrix.repository }}
           path: ${{ matrix.repository }}
+          token: ${{ secrets.PLUGIN_GH_PAT }}
 
       - name: Update ${{ matrix.repository }} readme.txt
         run:
