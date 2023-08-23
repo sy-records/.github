@@ -43,7 +43,7 @@ jobs:
         uses: 10up/action-wordpress-plugin-deploy@stable
         with:
           dry-run: ${{ github.event_name == 'pull_request' }}
-          generate-zip: ${{ github.event_name == 'release' }}
+          generate-zip: true
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
@@ -54,8 +54,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.repository.name }}
-          path: ${{ github.event.repository.name }}.zip
-          retention-days: 1
+          path: ${{ steps.deploy.outputs.zip-path }}
+          retention-days: 3
 
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
