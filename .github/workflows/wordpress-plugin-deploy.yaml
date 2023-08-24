@@ -40,7 +40,7 @@ jobs:
 
       - name: WordPress Plugin Deploy
         id: deploy
-        uses: 10up/action-wordpress-plugin-deploy@stable
+        uses: 10up/action-wordpress-plugin-deploy@develop
         with:
           dry-run: ${{ github.event_name == 'pull_request' }}
           generate-zip: true
