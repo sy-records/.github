@@ -53,7 +53,7 @@ jobs:
           SLUG: ${{ secrets.PLUGIN_SLUG }}
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-php${{ inputs.php }}
           path: ${{ steps.packaging.outputs.zip-path }}
