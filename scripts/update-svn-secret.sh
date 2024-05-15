@@ -1,6 +1,6 @@
 #!/bin/bash
 
-repos=("qiniu-kodo-wordpress" "aliyun-oss-wordpress" "wordpress-qcloud-cos" "realtimehot-weibo" "wp-baidu-textcensor" "textcensor-for-articles" "random-look" "MemorialDay" "upyun-uss-wordpress" "volcengine-imagex-wordpress" "huaweicloud-obs-wordpress" "pinyin-slug" "pangu.js")
+repos=("qiniu-kodo-wordpress" "aliyun-oss-wordpress" "wordpress-qcloud-cos" "realtimehot-weibo" "wp-baidu-textcensor" "textcensor-for-articles" "random-look" "MemorialDay" "upyun-uss-wordpress" "volcengine-imagex-wordpress" "huaweicloud-obs-wordpress" "pinyin-slug" "pangu.js" "sy-mailer")
 owner="sy-records"
 
 echo "Please enter your SVN_USERNAME:"

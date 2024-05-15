@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         owner: [ 'sy-records' ]
-        repository: [ 'qiniu-kodo-wordpress', 'aliyun-oss-wordpress', 'sync-qcloud-cos', 'realtimehot-weibo', 'wp-baidu-textcensor', 'textcensor-for-articles', 'random-look', 'MemorialDay', 'upyun-uss-wordpress', 'volcengine-imagex-wordpress', 'huaweicloud-obs-wordpress', 'pinyin-slug', 'pangu.js' ]
+        repository: [ 'qiniu-kodo-wordpress', 'aliyun-oss-wordpress', 'sync-qcloud-cos', 'realtimehot-weibo', 'wp-baidu-textcensor', 'textcensor-for-articles', 'random-look', 'MemorialDay', 'upyun-uss-wordpress', 'volcengine-imagex-wordpress', 'huaweicloud-obs-wordpress', 'pinyin-slug', 'pangu.js', 'sy-mailer' ]
     steps:
       - uses: actions/checkout@v4
 
