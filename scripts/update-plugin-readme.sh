@@ -1,26 +1,45 @@
 #!/bin/bash
 
-wpVersion=$WP_VERSION
+testedWpVersion=$WP_TESTED_VERSION
+requireWpVersion=$WP_REQUIRE_VERSION
 phpVersion=$PHP_VERSION
 
-wpVersionTxt="Tested up to:"
+testedWpVersionTxt="Tested up to:"
+requireWpVersionTxt="Requires at least:"
 phpVersionTxt="Requires PHP:"
 
-if [ -z "$wpVersion" ]; then
-    echo "WP_VERSION is not set"
+if [ -z "$testedWpVersion" ]; then
+    echo "WP_TESTED_VERSION is not set"
+fi
+
+if [ -z "$requireWpVersion" ]; then
+    echo "WP_REQUIRE_VERSION is not set"
 fi
 
 readmeFile=$(pwd)/readme.txt
 content=$(cat "$readmeFile")
 
-if [ -n "$wpVersion" ]; then
-    pattern="${wpVersionTxt}[[:space:]]*([0-9.]+)"
+if [ -n "$testedWpVersion" ]; then
+    pattern="${testedWpVersionTxt}[[:space:]]*([0-9.]+)"
     if [[ $content =~ $pattern ]]; then
         oldWPVersion="${BASH_REMATCH[1]}"
         if [ -n "$oldWPVersion" ]; then
-            echo "Now WordPress version is: $oldWPVersion"
-            echo "Change WordPress version to: $wpVersion"
-            content=$(echo "$content" | sed -E "s/${wpVersionTxt}[[:space:]]*[0-9.]+/${wpVersionTxt} $wpVersion/")
+            echo "Now Tested WordPress version is: $oldWPVersion"
+            echo "Change Tested WordPress version to: $testedWpVersion"
+            content=$(echo "$content" | sed -E "s/${testedWpVersionTxt}[[:space:]]*[0-9.]+/${testedWpVersionTxt} $testedWpVersion/")
+            echo "$content" > "$readmeFile"
+        fi
+    fi
+fi
+
+if [ -n "$requireWpVersion" ]; then
+    pattern="${requireWpVersionTxt}[[:space:]]*([0-9.]+)"
+    if [[ $content =~ $pattern ]]; then
+        oldRequireWPVersion="${BASH_REMATCH[1]}"
+        if [ -n "$oldRequireWPVersion" ]; then
+            echo "Now Require WordPress version is: $oldRequireWPVersion"
+            echo "Change Require WordPress version to: $requireWpVersion"
+            content=$(echo "$content" | sed -E "s/${requireWpVersionTxt}[[:space:]]*[0-9.]+/${requireWpVersionTxt} $requireWpVersion/")
             echo "$content" > "$readmeFile"
         fi
     fi

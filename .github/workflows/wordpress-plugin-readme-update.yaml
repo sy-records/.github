@@ -3,13 +3,16 @@ name: Plugin readme update
 on:
   workflow_dispatch:
     inputs:
+      wp_testd_version:
+        description: 'Input Tested WordPress Version'
+        required: true
+      wp_require_version:
+        description: 'Input Require WordPress Version'
+        required: false
       php_version:
         description: 'Input PHP Version'
         required: false
         default: ''
-      wp_version:
-        description: 'Input WordPress Version'
-        required: true
 
 jobs:
   update:
@@ -32,7 +35,7 @@ jobs:
 
       - name: Update ${{ matrix.repository }} readme.txt
         run:
-          PHP_VERSION=${{ github.event.inputs.php_version }} WP_VERSION=${{ github.event.inputs.wp_version }} ${{ github.workspace }}/scripts/update-plugin-readme.sh
+          PHP_VERSION=${{ github.event.inputs.php_version }} WP_TESTED_VERSION=${{ github.event.inputs.wp_testd_version }} WP_REQUIRE_VERSION=${{ github.event.inputs.wp_require_version }} ${{ github.workspace }}/scripts/update-plugin-readme.sh
         working-directory: ${{ matrix.repository }}
 
       - name: Push to ${{ matrix.owner }}/${{ matrix.repository }}
