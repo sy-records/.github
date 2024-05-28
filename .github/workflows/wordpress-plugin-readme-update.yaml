@@ -44,3 +44,4 @@ jobs:
           repository: ${{ matrix.repository }}
           commit_message: Update readme.txt
           file_pattern: readme.txt
+          commit_options: '--signoff'
