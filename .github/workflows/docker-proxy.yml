@@ -1,0 +1,53 @@
+name: Pull from Docker Hub and Push to Coding
+
+on:
+  workflow_dispatch:
+    inputs:
+      docker_image:
+        description: 'The name of the Docker image to pull from Docker Hub'
+        required: true
+        default: ''
+      tag:
+        description: 'The tag of the Docker image to pull and push'
+        required: true
+        default: 'latest'
+      name:
+        description: 'A new name for the Docker image'
+        required: true
+        default: ''
+
+jobs:
+  mirror:
+    name: Sync ${{ github.event.inputs.docker_image }}:${{ github.event.inputs.tag }}
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      CODING_REGISTRY_URL: ${{ secrets.CODING_REGISTRY_URL }}
+      CODING_REGISTRY_USERNAME: ${{ secrets.CODING_REGISTRY_USERNAME }}
+      CODING_USERNAME: ${{ secrets.CODING_USERNAME }}
+      CODING_TOKEN: ${{ secrets.CODING_TOKEN }}
+      CODING_IMAGE: ${{ secrets.CODING_REGISTRY_URL }}/${{ secrets.CODING_REGISTRY_USERNAME }}/docker/${{ github.event.inputs.name }}:${{ github.event.inputs.tag }}
+
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      - name: Pull Docker image from Docker Hub
+        run: docker pull ${{ github.event.inputs.docker_image }}:${{ github.event.inputs.tag }}
+
+      - name: Log in to Coding Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.CODING_REGISTRY_URL }}
+          username: ${{ env.CODING_USERNAME }}
+          password: ${{ env.CODING_TOKEN }}
+
+      - name: Tag Docker image for Coding Docker Registry
+        run: docker tag ${{ github.event.inputs.docker_image }}:${{ github.event.inputs.tag }} ${{ env.CODING_IMAGE }}
+
+      - name: Push Docker image to Coding Docker Registry
+        run: docker push ${{ env.CODING_IMAGE }}
