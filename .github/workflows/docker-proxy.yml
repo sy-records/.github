@@ -2,6 +2,10 @@ name: Mirror Docker Images
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/images.yml'
+    branches: [ 'main' ]
 
 jobs:
   mirror:
