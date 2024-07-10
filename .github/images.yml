@@ -1,0 +1,7 @@
+images:
+  - image: "vaultwarden/server"
+    tag: "latest"
+    name: "vaultwarden"
+  - image: "finab/bark-server"
+    tag: "latest"
+    name: "bark-server"
