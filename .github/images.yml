@@ -5,3 +5,6 @@ images:
   - image: "finab/bark-server"
     tag: "latest"
     name: "bark-server"
+  - image: "elasticsearch"
+    tag: "7.17.23"
+    name: "elasticsearch"
