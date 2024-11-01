@@ -8,3 +8,6 @@ images:
   - image: "elasticsearch"
     tag: "7.17.23"
     name: "elasticsearch"
+  - image: "mysql"
+    tag: "5.7"
+    name: "mysql"
