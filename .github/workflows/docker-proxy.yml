@@ -21,7 +21,7 @@ jobs:
             image=$(echo $item | jq -r '.image')
             name=$(echo $item | jq -r '.name')
             tag=$(echo $item | jq -r '.tag')
-            skopeo copy docker://docker.io/${image}:${tag} \
+            skopeo copy --all docker://docker.io/${image}:${tag} \
               docker://${{ secrets.CODING_REGISTRY_URL }}/${{ secrets.CODING_REGISTRY_USERNAME }}/docker/${name}:${tag} \
               --src-creds "${{ secrets.DOCKERHUB_USERNAME }}:${{ secrets.DOCKERHUB_TOKEN }}" \
               --dest-creds "${{ secrets.CODING_USERNAME }}:${{ secrets.CODING_TOKEN }}"
