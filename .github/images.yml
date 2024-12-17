@@ -11,3 +11,6 @@ images:
   - image: "mysql"
     tag: "5.7"
     name: "mysql"
+  - image: "hyperf/hyperf"
+    tag: "8.3-alpine-v3.20-swoole"
+    name: "hyperf"
