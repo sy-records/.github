@@ -41,6 +41,9 @@ jobs:
         run: |
           echo "VERSION=ci" >> $GITHUB_ENV
 
+      - name: Install Subversion
+        run: sudo apt-get install subversion
+
       - name: WordPress Plugin Deploy
         id: deploy
         uses: 10up/action-wordpress-plugin-deploy@develop
