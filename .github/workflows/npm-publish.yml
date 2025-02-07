@@ -53,4 +53,4 @@ jobs:
 
       - name: Publish to npm registry
         if: startsWith(github.ref, 'refs/tags/v')
-        run: npm publish --registry=https://registry.npmjs.org
+        run: npm publish --access public --registry=https://registry.npmjs.org
