@@ -14,3 +14,6 @@ images:
   - image: "hyperf/hyperf"
     tag: "8.3-alpine-v3.20-swoole"
     name: "hyperf"
+  - image: "clickhouse"
+    tag: "24.8"
+    name: "clickhouse"
