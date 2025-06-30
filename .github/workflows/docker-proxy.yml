@@ -10,7 +10,7 @@ on:
 jobs:
   mirror:
     runs-on: ubuntu-latest
-    name: Mirror Docker images from Docker Hub to Coding
+    name: Mirror Docker images from Docker Hub to CNB
     steps:
       - uses: actions/checkout@v4
       - name: Mirror images
@@ -22,7 +22,7 @@ jobs:
             name=$(echo $item | jq -r '.name')
             tag=$(echo $item | jq -r '.tag')
             skopeo copy --all docker://docker.io/${image}:${tag} \
-              docker://${{ secrets.CODING_REGISTRY_URL }}/${{ secrets.CODING_REGISTRY_USERNAME }}/docker/${name}:${tag} \
+              docker://docker.cnb.cool/lufei/docker/${name}:${tag} \
               --src-creds "${{ secrets.DOCKERHUB_USERNAME }}:${{ secrets.DOCKERHUB_TOKEN }}" \
-              --dest-creds "${{ secrets.CODING_USERNAME }}:${{ secrets.CODING_TOKEN }}"
+              --dest-creds "cnb:${{ secrets.CNB_DOCKER_TOKEN }}"
           done
