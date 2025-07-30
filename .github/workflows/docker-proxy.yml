@@ -2,6 +2,23 @@ name: Mirror Docker Images
 
 on:
   workflow_dispatch:
+    inputs:
+      name:
+        description: 'Select image to mirror (or leave blank to mirror all)'
+        required: false
+        type: choice
+        options:
+          - ""
+          - vaultwarden
+          - bark-server
+          - elasticsearch
+          - mysql
+          - hyperf
+          - clickhouse
+      version:
+        description: 'Override tag version'
+        required: false
+        type: string
   push:
     paths:
       - '.github/images.yml'
@@ -14,15 +31,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Mirror images
+        env:
+          INPUT_NAME: ${{ github.event.inputs.name }}
+          INPUT_VERSION: ${{ github.event.inputs.version }}
         run: |
-          images=$(cat ${{ github.workspace }}/.github/images.yml | yq '.images' -o json)
-          matrix=$(echo "$images" | jq -c '.[] | {image: .image, name: .name, tag: .tag}')
-          for item in $(echo "$matrix"); do
-            image=$(echo $item | jq -r '.image')
-            name=$(echo $item | jq -r '.name')
-            tag=$(echo $item | jq -r '.tag')
+          images=$(yq -o json '.images' ${{ github.workspace }}/.github/images.yml)
+
+          if [ -n "$INPUT_NAME" ]; then
+          matrix=$(echo "$images" | jq -c --arg name "$INPUT_NAME" '.[] | select(.name == $name)')
+          else
+          matrix=$(echo "$images" | jq -c '.[]')
+          fi
+
+          if [ -z "$matrix" ]; then
+          echo "No matching images found for name: $INPUT_NAME"
+          exit 1
+          fi
+
+          echo "$matrix" | while read -r item; do
+            image=$(echo "$item" | jq -r '.image')
+            name=$(echo "$item" | jq -r '.name')
+            default_tag=$(echo "$item" | jq -r '.tag')
+            tag=${INPUT_VERSION:-$default_tag}
+
+            echo "Mirroring $image:$tag to docker.cnb.cool/lufei/docker/$name:$tag"
+
             skopeo copy --all docker://docker.io/${image}:${tag} \
               docker://docker.cnb.cool/lufei/docker/${name}:${tag} \
               --src-creds "${{ secrets.DOCKERHUB_USERNAME }}:${{ secrets.DOCKERHUB_TOKEN }}" \
               --dest-creds "cnb:${{ secrets.CNB_DOCKER_TOKEN }}"
+          
+            echo "::notice title=Image Published::https://docker.cnb.cool/lufei/docker/${name}:${tag}"
           done
