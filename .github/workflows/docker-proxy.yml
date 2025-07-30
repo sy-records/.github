@@ -1,4 +1,4 @@
-name: Mirror Docker Images
+name: Mirror Docker Images to CNB
 
 on:
   workflow_dispatch:
@@ -26,8 +26,9 @@ on:
 
 jobs:
   mirror:
+    name: >-
+      Mirror ${{ github.event.inputs.name || 'All Images' }}${{ github.event.inputs.version && format(' (version: {0})', github.event.inputs.version) || '' }}
     runs-on: ubuntu-latest
-    name: Mirror Docker images from Docker Hub to CNB
     steps:
       - uses: actions/checkout@v4
       - name: Mirror images
