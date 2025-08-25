@@ -19,10 +19,11 @@ on:
         description: 'Override tag version'
         required: false
         type: string
-  push:
-    paths:
-      - '.github/images.yml'
-    branches: [ 'main' ]
+# Enable if you want automatic mirroring on config change
+#  push:
+#    paths:
+#      - '.github/images.yml'
+#    branches: [ 'main' ]
 
 jobs:
   mirror:
@@ -30,7 +31,7 @@ jobs:
       Mirror ${{ github.event.inputs.name || 'All Images' }}${{ github.event.inputs.version && format(' (version: {0})', github.event.inputs.version) || '' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Mirror images
         env:
           INPUT_NAME: ${{ github.event.inputs.name }}
@@ -55,7 +56,7 @@ jobs:
             default_tag=$(echo "$item" | jq -r '.tag')
             tag=${INPUT_VERSION:-$default_tag}
 
-            echo "Mirroring $image:$tag to docker.cnb.cool/lufei/docker/$name:$tag"
+            echo "Mirroring ${image}:${tag} to docker.cnb.cool/lufei/docker/${name}:${tag}"
 
             skopeo copy --all docker://docker.io/${image}:${tag} \
               docker://docker.cnb.cool/lufei/docker/${name}:${tag} \
@@ -63,4 +64,13 @@ jobs:
               --dest-creds "cnb:${{ secrets.CNB_DOCKER_TOKEN }}"
           
             echo "::notice title=Image Published::https://docker.cnb.cool/lufei/docker/${name}:${tag}"
+
+            if [ "$default_tag" = "latest" ]; then
+              echo "Also mirroring ${image}:latest to docker.cnb.cool/lufei/docker/${name}:latest"
+              skopeo copy --all docker://docker.io/${image}:latest \
+              docker://docker.cnb.cool/lufei/docker/${name}:latest \
+              --src-creds "${{ secrets.DOCKERHUB_USERNAME }}:${{ secrets.DOCKERHUB_TOKEN }}" \
+              --dest-creds "cnb:${{ secrets.CNB_DOCKER_TOKEN }}"
+              echo "::notice title=Image Published::https://docker.cnb.cool/lufei/docker/${name}:latest"
+            fi
           done
