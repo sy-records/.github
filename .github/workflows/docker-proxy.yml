@@ -31,7 +31,7 @@ jobs:
       Mirror ${{ github.event.inputs.name || 'All Images' }}${{ github.event.inputs.version && format(' (version: {0})', github.event.inputs.version) || '' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Mirror images
         env:
           INPUT_NAME: ${{ github.event.inputs.name }}
