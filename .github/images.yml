@@ -17,3 +17,6 @@ images:
   - image: "clickhouse"
     tag: "24.8"
     name: "clickhouse"
+  - image: "certimate/certimate"
+    tag: "latest"
+    name: "certimate"
