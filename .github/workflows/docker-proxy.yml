@@ -16,6 +16,9 @@ on:
           - hyperf
           - clickhouse
           - certimate
+          - new-api
+          - redis
+          - postgres
       version:
         description: 'Override tag version'
         required: false
