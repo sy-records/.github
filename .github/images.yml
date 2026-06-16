@@ -29,3 +29,6 @@ images:
   - image: "postgres"
     tag: "15"
     name: "postgres"
+  - image: "gotenberg/gotenberg"
+    tag: "latest"
+    name: "gotenberg"
