@@ -19,6 +19,7 @@ on:
           - new-api
           - redis
           - postgres
+          - gotenberg
       version:
         description: 'Override tag version'
         required: false
