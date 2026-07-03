@@ -42,6 +42,29 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: npm publish --registry=https://npm.pkg.github.com
 
-      - name: Publish to npm registry
+      - name: Detect npm publish mode
+        id: npm-publish-mode
         if: startsWith(github.ref, 'refs/tags/v')
-        run: npm publish --access public --registry=https://registry.npmjs.org
+        run: |
+          PACKAGE_NAME="$(node -p "require('./package.json').name")"
+          if npm view "$PACKAGE_NAME" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "mode=trusted" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=bootstrap" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm registry (Trusted Publishing)
+        if: startsWith(github.ref, 'refs/tags/v') && steps.npm-publish-mode.outputs.mode == 'trusted'
+        run: npm publish --access public --provenance --registry=https://registry.npmjs.org
+
+      - name: Publish to npm registry (first release bootstrap)
+        if: startsWith(github.ref, 'refs/tags/v') && steps.npm-publish-mode.outputs.mode == 'bootstrap'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "PUBLISH_NPM_TOKEN is required for first publish before Trusted Publishing can be configured."
+            exit 1
+          fi
+          echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
+          npm publish --access public --registry=https://registry.npmjs.org
