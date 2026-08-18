@@ -32,3 +32,6 @@ images:
   - image: "gotenberg/gotenberg"
     tag: "latest"
     name: "gotenberg"
+  - image: "mauriceboe/trek"
+    tag: "latest"
+    name: "trek"
