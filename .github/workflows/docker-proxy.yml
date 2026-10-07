@@ -80,3 +80,22 @@ jobs:
               echo "::notice title=Image Published::https://docker.cnb.cool/lufei/docker/${name}:latest"
             fi
           done
+
+      - name: Trigger private deployment
+        env:
+          GH_TOKEN: ${{ secrets.COMPOSE_DEPLOY_TOKEN }}
+          INPUT_NAME: ${{ github.event.inputs.name }}
+          DEPLOY_REPOSITORY: ${{ vars.DEPLOY_REPOSITORY }}
+        run: |
+          set -euo pipefail
+          case "$INPUT_NAME" in
+            bark-server) service=bark ;;
+            trek|certimate|bark|vaultwarden) service="$INPUT_NAME" ;;
+            *) exit 0 ;;
+          esac
+
+          gh workflow run deploy.yml \
+            --repo "$DEPLOY_REPOSITORY" \
+            --ref main \
+            --field "service=$service"
+          echo "::notice title=Deployment Triggered::Requested deployment for $service in $DEPLOY_REPOSITORY"
